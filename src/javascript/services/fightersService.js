@@ -1,7 +1,7 @@
 import {callApi} from '../helpers/apiHelper';
+import Fighter from "../fighter";
 
 class FighterService {
-    fighterDetailsCache = new Map();
 
     async getFighters() {
         try {
@@ -16,18 +16,12 @@ class FighterService {
 
     async getFighterDetails(_id) {
         try {
-            if (this.fighterDetailsCache.has(_id)) {
-                return this.fighterDetailsCache.get(_id);
-            }
             const endpoint = `details/fighter/${_id}.json`;
             const apiResult = await callApi(endpoint, 'GET');
-            const fighterDetails = JSON.parse(atob(apiResult.content));
-            this.fighterDetailsCache.set(_id, fighterDetails);
-            return fighterDetails;
+            const jsonDetails = JSON.parse(atob(apiResult.content));
+            return new Fighter(jsonDetails);
         } catch (error) {
             throw error;
-        } finally {
-            console.log(this.fighterDetailsCache);
         }
     }
 }
