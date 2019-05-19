@@ -1,7 +1,6 @@
 import {utils} from '../utils';
-import BootstrapModalWrapperFactory
-    from './../../../node_modules/bootstrap-modal-wrapper/dist/bootstrap-modal-wrapper-factory.min';
-import $ from './../../../node_modules/jquery/dist/jquery.min';
+import BootstrapModalWrapperFactory from 'bootstrap-modal-wrapper/dist/bootstrap-modal-wrapper-factory.min';
+import $ from 'jquery/dist/jquery.min';
 
 class ViewUtils {
     createLabelledInput(name, value, isReadOnly, onChange) {
@@ -119,7 +118,7 @@ class ViewUtils {
         bodyDiv.appendChild(bodyContent);
         const footerDiv = this.createElement({
             tagName: 'div',
-            classNames: ['card-footer', 'text-muted', 'd-flex', 'justify-content-center']
+            classNames: ['card-footer', 'text-muted', 'd-flex', 'justify-content-end']
         });
         footerDiv.appendChild(footerContent);
 
