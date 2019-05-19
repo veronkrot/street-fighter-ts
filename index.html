@@ -1,18 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
     <title>Street Fight</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root">
-    </div>
-    <div id="fight"></div>
-    <div id="loading-overlay">
-      <img src="resources/logo.png"/>
-    </div>
-    <script src="dist/bundle.js"></script>
-  </body>
+    <style>
+        #loading-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(255, 255, 255, 0.7);
+            visibility: hidden;
+        }
+    </style>
+</head>
+<body>
+<noscript>You need to enable JavaScript to run this app.</noscript>
+<div id="root"></div>
+<div id="fight"></div>
+<div id="loading-overlay">
+    <img src="resources/logo.png"/>
+</div>
+<script src="dist/bundle.js"></script>
+</body>
 </html>

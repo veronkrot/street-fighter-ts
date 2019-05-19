@@ -5,11 +5,13 @@ import {selectors} from "../helpers/selectors";
 import FighterBattleView from "./fighterBattleView";
 import {i18n} from "../helpers/i18n";
 import FightResultsView from "./fightResultsView";
+import SoundPlayer from "../services/soundPlayer";
 
 class FightView extends View {
 
     fighter1;
     fighter2;
+    player;
 
     constructor(fighter1, fighter2) {
         super();
@@ -24,6 +26,8 @@ class FightView extends View {
         $(document).on('click', '.' + selectors.fight.exit, (e) => FightView.handleExitBtnClick(e));
         this.fighter1.currentHealth = fighter1.health;
         this.fighter2.currentHealth = fighter2.health;
+        this.player = new SoundPlayer('./../../resources/audio/mk.mp3');
+        this.player.play();
     }
 
     static _cloneFighter(fighter) {
@@ -115,6 +119,7 @@ class FightView extends View {
             winners.push(this.fighter1);
         }
         if (winners && winners.length > 0) {
+            this.player.stop();
             FightView.hideFightView();
             const modalDialog = viewUtils.createModalDialog(i18n.get('fight.result.title'), new FightResultsView(winners).element,
                 [
