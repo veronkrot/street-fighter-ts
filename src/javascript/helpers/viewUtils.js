@@ -1,4 +1,4 @@
-import {utils} from '../utils';
+import {utils} from './utils';
 import BootstrapModalWrapperFactory from 'bootstrap-modal-wrapper/dist/bootstrap-modal-wrapper-factory.min';
 import $ from 'jquery/dist/jquery.min';
 
@@ -40,7 +40,22 @@ class ViewUtils {
             $(document).on('keyup', '#' + inputId, e => onChange(e));
         }
         wrapper.appendChild(spanDiv);
+
+        const validMsg = this.createElement({
+            tagName: 'div',
+            classNames: ['valid-feedback']
+        });
+        validMsg.innerText = 'Good';
+        const invalidMsg = this.createElement({
+            tagName: 'div',
+            classNames: ['invalid-feedback']
+        });
+        invalidMsg.innerText = 'Error';
+
+
         wrapper.appendChild(inputEl);
+        wrapper.appendChild(validMsg);
+        wrapper.appendChild(invalidMsg);
 
         return wrapper;
     }
@@ -118,7 +133,7 @@ class ViewUtils {
         bodyDiv.appendChild(bodyContent);
         const footerDiv = this.createElement({
             tagName: 'div',
-            classNames: ['card-footer', 'text-muted', 'd-flex', 'justify-content-end']
+            classNames: ['card-footer', 'text-muted', 'd-flex', 'justify-content-center']
         });
         footerDiv.appendChild(footerContent);
 

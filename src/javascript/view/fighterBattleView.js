@@ -1,7 +1,7 @@
 import View from "./view";
-import {selectors} from "../selectors";
-import {viewUtils} from "./viewUtils";
-import StatsView from "./StatsView";
+import {selectors} from "../helpers/selectors";
+import {viewUtils} from "../helpers/viewUtils";
+import StatsView from "./statsView";
 
 class FighterBattleView extends View {
     constructor(fighter, reverse) {
@@ -25,7 +25,7 @@ class FighterBattleView extends View {
         });
         const image = viewUtils.createElement({
             tagName: 'img',
-            classNames: ['fight-view-fighter-image', imgClass],
+            classNames: [selectors.fight.img, imgClass],
             attributes: {
                 src: fighter.source
             }

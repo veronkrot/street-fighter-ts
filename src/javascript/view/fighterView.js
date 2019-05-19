@@ -1,10 +1,9 @@
 import View from './view';
-import {viewUtils} from "./viewUtils";
-import {selectors} from "../selectors";
+import {viewUtils} from "../helpers/viewUtils";
+import {selectors} from "../helpers/selectors";
+import {i18n} from "../helpers/i18n";
 
 class FighterView extends View {
-
-    static selectedFighterClass = selectors.fighter.checkbox;
 
     constructor(fighter, handleClick, handleSelectFighter) {
         super();
@@ -17,18 +16,18 @@ class FighterView extends View {
         const nameElement = this.createName(name);
         const imageElement = this.createImage(source);
         const checkboxElement = viewUtils.createBSCheckbox(
-            'Select',
-            FighterView.selectedFighterClass,
+            i18n.get('fighter.select'),
+            selectors.fighter.checkbox,
             e => handleSelectFighter(e, fighter));
 
-        this.element = this.createElement({tagName: 'div', className: 'fighter'});
+        this.element = this.createElement({tagName: 'div', className: selectors.fighter.fighter});
         this.element.append(imageElement, nameElement, checkboxElement);
 
         this.element.addEventListener('click', event => handleClick(event, fighter), false);
     }
 
     createName(name) {
-        const nameElement = this.createElement({tagName: 'span', className: 'name'});
+        const nameElement = this.createElement({tagName: 'span', className: selectors.fighter.name});
         nameElement.innerText = name;
 
         return nameElement;
@@ -38,7 +37,7 @@ class FighterView extends View {
         const attributes = {src: source};
         return this.createElement({
             tagName: 'img',
-            className: 'fighter-image',
+            className: selectors.fighter.image,
             attributes
         });
     }

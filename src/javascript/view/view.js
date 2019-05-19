@@ -1,4 +1,4 @@
-import {viewUtils} from "./viewUtils";
+import {viewUtils} from "../helpers/viewUtils";
 
 class View {
     element;

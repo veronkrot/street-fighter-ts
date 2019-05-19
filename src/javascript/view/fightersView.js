@@ -2,14 +2,15 @@ import View from './view';
 import FighterView from './fighterView';
 import {fighterService} from '../services/fightersService';
 import FighterDetailsView from './fighterDetailsView';
-import {selectors} from "../selectors";
+import {selectors} from "../helpers/selectors";
 import FightView from "./fightView";
-import {viewUtils} from "./viewUtils";
+import {viewUtils} from "../helpers/viewUtils";
 import $ from 'jquery/dist/jquery.min';
+import {fightersCache} from "../services/fightersCache";
+import {i18n} from "../helpers/i18n";
 
 class FightersView extends View {
 
-    static fighterDetailsCache = new Map();
     selectedFighters = [];
 
     constructor(fighters) {
@@ -26,7 +27,7 @@ class FightersView extends View {
         });
 
         this.element = viewUtils.createElement({tagName: 'div'});
-        const fightersEls = this.createElement({tagName: 'div', className: 'fighters'});
+        const fightersEls = this.createElement({tagName: 'div', className: selectors.fighter.fighters});
         fightersEls.append(...fighterElements);
         const startFightBtn = this.createStartFightButton();
         this.element.appendChild(fightersEls);
@@ -40,12 +41,12 @@ class FightersView extends View {
         });
         const startFightBtn = viewUtils.createElement({
             tagName: 'button',
-            classNames: ['btn-primary', 'btn', selectors.startFight],
+            classNames: ['btn-primary', 'btn', selectors.buttons.startFight],
             attributes: {
                 type: 'button'
             }
         });
-        startFightBtn.innerText = 'Start Fight';
+        startFightBtn.innerText = i18n.get('fight.start');
         startFightBtn.addEventListener('click', (e) => this.handleStartFight(e));
         div.appendChild(startFightBtn);
         return div;
@@ -53,26 +54,24 @@ class FightersView extends View {
 
     getFighterDetails(_id) {
         return new Promise((resolve, reject) => {
-            if (FightersView.fighterDetailsCache.has(_id)) {
-                resolve(FightersView.fighterDetailsCache.get(_id));
+            if (fightersCache.has(_id)) {
+                resolve(fightersCache.get(_id));
                 return;
             }
             fighterService.getFighterDetails(_id).then(fighterDetails => {
-                FightersView.updateCache(_id, fighterDetails);
+                fightersCache.updateCache(fighterDetails, _id);
                 resolve(fighterDetails);
             }).catch(e => reject(e));
         });
     }
 
-    static updateCache(fighterDetails) {
-        FightersView.fighterDetailsCache.set(fighterDetails._id, fighterDetails);
-    }
-
     handleStartFight(e) {
-        const fightElement = document.getElementById(selectors.fight);
-        fightElement.innerHTML = new FightView(this.selectedFighters[0], this.selectedFighters[1]).element.innerHTML;
-        fightElement.style.visibility = 'visible';
+        const $fightElement = $('#' + selectors.fight.view);
+        $fightElement[0].innerHTML = new FightView(this.selectedFighters[0], this.selectedFighters[1]).element.innerHTML;
+        $fightElement.show();
         $('#root').hide();
+        const startBtn = $('.' + selectors.buttons.startFight)[0];
+        startBtn.style.visibility = 'hidden';
         this.clearSelectedFighters();
     }
 
@@ -85,7 +84,7 @@ class FightersView extends View {
         this.selectedFighters = [];
     }
 
-    handleSelectFighter(e, fighter) {
+    async handleSelectFighter(e, fighter) {
         const el = $(e.target);
         const isSelected = el.hasClass(selectors.fighter.selected);
         if (!isSelected && this.selectedFighters.length >= 2) {
@@ -97,7 +96,8 @@ class FightersView extends View {
             el.removeClass('btn-danger');
             el.addClass('btn-success');
         } else {
-            this.selectedFighters.push(fighter);
+            const fighterDetails = await this.getFighterDetails(fighter._id);
+            this.selectedFighters.push(fighterDetails);
             el.addClass(selectors.fighter.selected);
             el.removeClass('btn-success');
             el.addClass('btn-danger');
@@ -106,7 +106,7 @@ class FightersView extends View {
     }
 
     toggleStartFightBtn() {
-        const startBtn = $('.' + selectors.startFight)[0];
+        const startBtn = $('.' + selectors.buttons.startFight)[0];
         if (this.selectedFighters.length === 2) {
             startBtn.style.visibility = 'visible';
         } else {
@@ -119,7 +119,7 @@ class FightersView extends View {
             return;
         }
         let fighterDetails = await this.getFighterDetails(fighter._id);
-        const fighterDetailsView = new FighterDetailsView(fighterDetails, FightersView.updateCache);
+        const fighterDetailsView = new FighterDetailsView(fighterDetails, fightersCache.updateCache);
         fighterDetailsView.show();
     }
 }

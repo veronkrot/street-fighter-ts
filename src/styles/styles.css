@@ -31,11 +31,11 @@ body {
 }
 
 .fighter:hover {
-    box-shadow: 0 0 50px 10px rgba(0,0,0,0.06);
+    box-shadow: 0 0 50px 10px rgba(0, 0, 0, 0.06);
     cursor: pointer;
 }
 
-.name {
+.fighter-name {
     align-self: center;
     font-size: 21px;
     margin-top: 20px;
@@ -64,7 +64,7 @@ body {
 }
 
 #fight {
-    visibility: hidden;
+    display: none;
 }
 
 .start-fight {
@@ -89,6 +89,38 @@ body {
 
 .save-cancel {
 
+}
+
+.fight-view-fighter-image {
+    height: 300px;
+}
+
+.second-fighter {
+    transform: scaleX(-1);
+}
+
+.strike-btn {
+    align-self: center;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.stat-name:after {
+    content: ': '
+}
+
+.second-fighter-stats {
+    align-self: flex-end;
+}
+
+.first-fighter-stats {
+    align-self: flex-start;
+}
+
+.health {
+    transform: scaleX(-1);
 }
 
 /*.btn.btn-primary, .btn.btn-secondary {*/

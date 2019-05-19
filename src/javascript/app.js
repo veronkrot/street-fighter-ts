@@ -1,6 +1,6 @@
 import FightersView from './view/fightersView';
 import {fighterService} from './services/fightersService';
-import {selectors} from "./selectors";
+import {i18n} from "./helpers/i18n";
 
 class App {
     constructor() {
@@ -13,7 +13,6 @@ class App {
     async startApp() {
         try {
             App.loadingElement.style.visibility = 'visible';
-
             const fighters = await fighterService.getFighters();
             const fightersView = new FightersView(fighters);
             const fightersElement = fightersView.element;
@@ -21,7 +20,7 @@ class App {
             App.rootElement.appendChild(fightersElement);
         } catch (error) {
             console.warn(error);
-            App.rootElement.innerText = 'Failed to load data';
+            App.rootElement.innerText = i18n.get('failedToLoad');
         } finally {
             App.loadingElement.style.visibility = 'hidden';
         }

@@ -1,4 +1,4 @@
-import {utils} from "./utils";
+import {utils} from "./helpers/utils";
 
 class Fighter {
 
@@ -8,16 +8,22 @@ class Fighter {
         this.health = details.health;
         this.attack = details.attack;
         this.defense = details.defense;
+        this.source = details.source;
     }
 
     getHitPower() {
         const criticalHitChance = utils.getRandomNumberInRange(1, 2);
-        return this.attack * criticalHitChance;
+        const hitPower = this.attack * criticalHitChance;
+        console.debug(this.name + ' hit power: ' + hitPower);
+        return hitPower;
     }
 
     getBlockPower() {
         const dodgeChance = utils.getRandomNumberInRange(1, 2);
-        return this.defense * dodgeChance;
+
+        const blockPower = this.defense * dodgeChance;
+        console.debug(this.name + ' block power: ' + blockPower);
+        return blockPower;
     }
 
 }

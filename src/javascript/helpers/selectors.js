@@ -20,6 +20,7 @@ export const selectors = {
         name: 'fighter-name',
         image: 'fighter-image',
         second: 'second-fighter',
+        health: 'health'
     },
     buttons: {
         save: 'save-confirm',
