@@ -26,7 +26,7 @@ class FighterDetailsView extends View {
                 return;
             }
             const isReadOnly = FighterDetailsView.readonlyFields.includes(prop);
-            const detail = viewUtils.createLabelledInput(prop, details[prop], isReadOnly, e => {
+            const detail = viewUtils.createLabelledInput(prop, details[prop], isReadOnly, i18n.get('validation.valid'), i18n.get('validation.invalid.' + prop),e => {
                 if (!details._changes) {
                     details._changes = {};
                 }
@@ -52,7 +52,7 @@ class FighterDetailsView extends View {
         let validHealth = false;
         newParams.health = Number(newParams.health);
         if (!Number.isNaN(newParams.health)) {
-            validHealth = newParams.health > 20 && newParams.health <= 80;
+            validHealth = newParams.health >= 20 && newParams.health <= 80;
         }
         return validHealth;
     }

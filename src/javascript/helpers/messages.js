@@ -18,6 +18,13 @@ export const messages = {
                 }
             }
         },
+        validation: {
+            valid: 'Looks Good!',
+            invalid: {
+                attack: 'Error! Allowed values are (0, 10]',
+                health: 'Error! Allowed values are [20, 80]',
+            }
+        },
         failedToLoadData: 'Failed to load data',
         failedToLoad: 'Failed to load'
     },
@@ -38,6 +45,13 @@ export const messages = {
                     single: 'Переможець: ',
                     multiple: 'Це нічия! Переможці: '
                 }
+            }
+        },
+        validation: {
+            valid: 'Все добре!',
+            invalid: {
+                attack: 'Помилка! Введіть число більше нуля, але не більше десяти.',
+                health: 'Помилка! Введіть число від 20 до 80 включно.',
             }
         },
         failedToLoadData: 'Помилка завантаження даних',

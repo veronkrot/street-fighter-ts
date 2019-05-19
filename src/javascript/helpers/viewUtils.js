@@ -1,9 +1,10 @@
 import {utils} from './utils';
 import BootstrapModalWrapperFactory from 'bootstrap-modal-wrapper/dist/bootstrap-modal-wrapper-factory.min';
 import $ from 'jquery/dist/jquery.min';
+import {i18n} from "./i18n";
 
 class ViewUtils {
-    createLabelledInput(name, value, isReadOnly, onChange) {
+    createLabelledInput(name, value, isReadOnly, validMsgTxt, invalidMsgTxt, onChange) {
         const wrapper = this.createElement({
             tagName: 'div',
             classNames: ['input-group', 'mb-3']
@@ -40,22 +41,23 @@ class ViewUtils {
             $(document).on('keyup', '#' + inputId, e => onChange(e));
         }
         wrapper.appendChild(spanDiv);
-
-        const validMsg = this.createElement({
-            tagName: 'div',
-            classNames: ['valid-feedback']
-        });
-        validMsg.innerText = 'Good';
-        const invalidMsg = this.createElement({
-            tagName: 'div',
-            classNames: ['invalid-feedback']
-        });
-        invalidMsg.innerText = 'Error';
-
-
         wrapper.appendChild(inputEl);
-        wrapper.appendChild(validMsg);
-        wrapper.appendChild(invalidMsg);
+        if (validMsgTxt) {
+            const validMsg = this.createElement({
+                tagName: 'div',
+                classNames: ['valid-feedback']
+            });
+            validMsg.innerText = validMsgTxt;
+            wrapper.appendChild(validMsg);
+        }
+        if (invalidMsgTxt) {
+            const invalidMsg = this.createElement({
+                tagName: 'div',
+                classNames: ['invalid-feedback']
+            });
+            invalidMsg.innerText = invalidMsgTxt;
+            wrapper.appendChild(invalidMsg);
+        }
 
         return wrapper;
     }
