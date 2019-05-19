@@ -48,7 +48,11 @@ class ViewUtils {
 
     createElement({tagName, classNames = [], attributes = {}}) {
         const element = document.createElement(tagName);
-        classNames.forEach(className => element.classList.add(className));
+        classNames.forEach(className => {
+            if (className) {
+                element.classList.add(className);
+            }
+        });
         Object.keys(attributes).forEach(key => element.setAttribute(key, attributes[key]));
 
         return element;
@@ -96,6 +100,35 @@ class ViewUtils {
         divWrapper.appendChild(label);
         return divWrapper;
     }
+
+    createBSCard(headerContent, bodyContent, footerContent) {
+        const divWrapper = this.createElement({
+            tagName: 'div',
+            classNames: ['card', 'text-center']
+        });
+
+        const headerDiv = this.createElement({
+            tagName: 'div',
+            classNames: ['card-header']
+        });
+        headerDiv.appendChild(headerContent);
+        const bodyDiv = this.createElement({
+            tagName: 'div',
+            classNames: ['card-body']
+        });
+        bodyDiv.appendChild(bodyContent);
+        const footerDiv = this.createElement({
+            tagName: 'div',
+            classNames: ['card-footer', 'text-muted', 'd-flex', 'justify-content-center']
+        });
+        footerDiv.appendChild(footerContent);
+
+        divWrapper.appendChild(headerDiv);
+        divWrapper.appendChild(bodyDiv);
+        divWrapper.appendChild(footerDiv);
+        return divWrapper;
+    }
+
 }
 
 export const viewUtils = new ViewUtils();

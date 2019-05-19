@@ -1,34 +1,25 @@
-import $ from './../../../node_modules/jquery/dist/jquery.min';
 import View from './view';
 import {viewUtils} from "./viewUtils";
-
-require('./../../../node_modules/bootstrap/dist/js/bootstrap');
 import {selectors} from "../selectors";
 
 class FighterView extends View {
 
-    constructor(fighter, handleClick) {
+    static selectedFighterClass = selectors.fighter.checkbox;
+
+    constructor(fighter, handleClick, handleSelectFighter) {
         super();
 
-        this.createFighter(fighter, handleClick);
+        this.createFighter(fighter, handleClick, handleSelectFighter);
     }
 
-    createFighter(fighter, handleClick) {
+    createFighter(fighter, handleClick, handleSelectFighter) {
         const {name, source} = fighter;
         const nameElement = this.createName(name);
         const imageElement = this.createImage(source);
-        const selectedFighterClass = selectors.fighter.checkbox;
-        const checkboxElement = viewUtils.createBSCheckbox('Select', selectedFighterClass, e => {
-            const el = $(e.target);
-            el.toggleClass('btn-success');
-            el.toggleClass('btn-danger');
-            const selectedElements = $(`label[data-item='${selectedFighterClass}'].active`).length;
-            if (selectedElements > 2) {
-                el.toggleClass('btn-success');
-                el.toggleClass('btn-danger');
-                el.toggleClass('active');
-            }
-        });
+        const checkboxElement = viewUtils.createBSCheckbox(
+            'Select',
+            FighterView.selectedFighterClass,
+            e => handleSelectFighter(e, fighter));
 
         this.element = this.createElement({tagName: 'div', className: 'fighter'});
         this.element.append(imageElement, nameElement, checkboxElement);
@@ -45,13 +36,11 @@ class FighterView extends View {
 
     createImage(source) {
         const attributes = {src: source};
-        const imgElement = this.createElement({
+        return this.createElement({
             tagName: 'img',
             className: 'fighter-image',
             attributes
         });
-
-        return imgElement;
     }
 }
 

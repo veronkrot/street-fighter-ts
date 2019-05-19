@@ -63,6 +63,34 @@ body {
     text-transform: capitalize;
 }
 
+#fight {
+    visibility: hidden;
+}
+
+.start-fight {
+    visibility: hidden;
+}
+
+.save-confirm {
+    color: white;
+    background-color: mediumvioletred;
+}
+
+.save-confirm:hover {
+    background-color: aquamarine;
+    border-color: slateblue;
+}
+
+.save-confirm:not(:disabled):not(.disabled).active, .save-confirm:not(:disabled):not(.disabled):active {
+    background-color: yellow;
+    border-color: yellow;
+    box-shadow: 0 8px 16px 0 yellow, 0 6px 20px 0 yellow;
+}
+
+.save-cancel {
+
+}
+
 /*.btn.btn-primary, .btn.btn-secondary {*/
 /*    padding: 12px 28px;*/
 /*    border-radius: 12px;*/

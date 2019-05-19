@@ -44,7 +44,7 @@ class FighterDetailsView extends View {
         const modalDialog = viewUtils.createModalDialog(fighterDetails.name, modalContent, [
             {
                 label: "Save changes",
-                cssClass: "btn btn-sm btn-outline-primary",
+                cssClass: "btn btn-sm btn-outline-info save-confirm",
                 action: (modalWrapper) => {
                     const isValid = FighterDetailsView.validateFighterDetails(fighterDetails);
                     if (isValid) {
@@ -57,7 +57,7 @@ class FighterDetailsView extends View {
             },
             {
                 label: "Cancel",
-                cssClass: "btn btn-sm btn-outline-secondary",
+                cssClass: "btn btn-sm btn-outline-secondary save-cancel",
                 action: (modalWrapper) => {
                     return modalWrapper.hide();
                 }
