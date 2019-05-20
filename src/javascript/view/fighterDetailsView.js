@@ -2,6 +2,8 @@ import View from "./view";
 import {viewUtils} from "../helpers/viewUtils";
 import {selectors} from "../helpers/selectors";
 import {i18n} from "../helpers/i18n";
+import SoundPlayer from "../services/soundPlayer";
+import {sounds} from "../helpers/sounds";
 
 class FighterDetailsView extends View {
 
@@ -11,6 +13,8 @@ class FighterDetailsView extends View {
     constructor(details, onUpdate) {
         super();
         this.element = this.createModal(details, onUpdate);
+        this.player = new SoundPlayer(sounds.fighters[details._id]);
+        this.player.play();
     }
 
     createModalContent(details) {
@@ -46,7 +50,7 @@ class FighterDetailsView extends View {
 
     static isValidHealth(fighterDetails) {
         const newParams = fighterDetails._changes;
-        if (!newParams || !newParams.health) {
+        if (!newParams || typeof newParams.health === 'undefined') {
             return true;
         }
         let validHealth = false;
@@ -59,7 +63,7 @@ class FighterDetailsView extends View {
 
     static isValidAttack(fighterDetails) {
         const newParams = fighterDetails._changes;
-        if (!newParams || !newParams.attack) {
+        if (!newParams || typeof newParams.attack === 'undefined') {
             return true;
         }
         let validAttack = false;

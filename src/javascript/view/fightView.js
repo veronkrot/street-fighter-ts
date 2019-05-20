@@ -6,6 +6,7 @@ import FighterBattleView from "./fighterBattleView";
 import {i18n} from "../helpers/i18n";
 import FightResultsView from "./fightResultsView";
 import SoundPlayer from "../services/soundPlayer";
+import {sounds} from "../helpers/sounds";
 
 class FightView extends View {
 
@@ -19,14 +20,14 @@ class FightView extends View {
         this.fighter2 = FightView._cloneFighter(fighter2);
         this.createView(this.fighter1, this.fighter2);
         this.handleStrikeBtnClick = this.handleStrikeBtnClick.bind(this);
-        FightView.handleExitBtnClick = FightView.handleExitBtnClick.bind(this);
+        this.handleExitBtnClick = this.handleExitBtnClick.bind(this);
         $(document).off('click', '.' + selectors.fight.strike);
         $(document).off('click', '.' + selectors.fight.exit);
         $(document).on('click', '.' + selectors.fight.strike, (e) => this.handleStrikeBtnClick(e));
-        $(document).on('click', '.' + selectors.fight.exit, (e) => FightView.handleExitBtnClick(e));
+        $(document).on('click', '.' + selectors.fight.exit, (e) => this.handleExitBtnClick(e));
         this.fighter1.currentHealth = fighter1.health;
         this.fighter2.currentHealth = fighter2.health;
-        this.player = new SoundPlayer('./../../resources/audio/mk.mp3');
+        this.player = new SoundPlayer(sounds.fight, true);
         this.player.play();
     }
 
@@ -120,6 +121,8 @@ class FightView extends View {
         }
         if (winners && winners.length > 0) {
             this.player.stop();
+            const winPlayer = new SoundPlayer(sounds.victory);
+            winPlayer.play();
             FightView.hideFightView();
             const modalDialog = viewUtils.createModalDialog(i18n.get('fight.result.title'), new FightResultsView(winners).element,
                 [
@@ -132,7 +135,10 @@ class FightView extends View {
                         }
                     },
                 ]).show();
-            modalDialog.originalModal.on('hidden.bs.modal', () => $('#root').show());
+            modalDialog.originalModal.on('hidden.bs.modal', () => {
+                winPlayer.stop();
+                $('#root').show();
+            });
             delete this.fighter1.currentHealth;
             delete this.fighter2.currentHealth;
         }
@@ -168,8 +174,10 @@ class FightView extends View {
         $('#' + selectors.fight.view).hide();
     }
 
-    static handleExitBtnClick(e) {
+    handleExitBtnClick(e) {
+        FightView.hideFightView();
         $('#root').show();
+        this.player.stop();
     }
 
     createHeader(fighter1, fighter2) {
@@ -183,7 +191,10 @@ class FightView extends View {
         });
 
         const col1 = this.createFighterHeader(fighter1);
-        const btn = this.createButton(i18n.get('fight.exit'), ['btn-danger', selectors.fight.exit]);
+        const btn = this.createButton(
+            i18n.get('fight.exit'),
+            ['btn-outline-danger', selectors.fight.exit]
+        );
         const col2 = this.createColumn(btn);
         col2.classList.add('d-flex', 'justify-content-center');
         const col3 = this.createFighterHeader(fighter2, true);

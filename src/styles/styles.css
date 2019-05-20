@@ -88,3 +88,8 @@ body {
 .health {
     transform: scaleX(-1);
 }
+
+.btn-margin {
+    margin: 5px;
+}
+

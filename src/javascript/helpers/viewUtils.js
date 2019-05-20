@@ -95,7 +95,7 @@ class ViewUtils {
         });
         const label = this.createElement({
             tagName: 'label',
-            classNames: ['btn', 'btn-success'],
+            classNames: ['btn', 'btn-info'],
             attributes: {
                 id,
                 'data-item': className
