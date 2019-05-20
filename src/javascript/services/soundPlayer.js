@@ -2,8 +2,9 @@ class SoundPlayer {
 
     player;
 
-    constructor(src) {
+    constructor(src, loop = false) {
         this.player = new Audio(src);
+        this.player.loop = loop;
     }
 
     play() {

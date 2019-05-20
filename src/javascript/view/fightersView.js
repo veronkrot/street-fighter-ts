@@ -7,7 +7,8 @@ import FightView from "./fightView";
 import {viewUtils} from "../helpers/viewUtils";
 import $ from 'jquery/dist/jquery.min';
 import {fightersCache} from "../services/fightersCache";
-import {i18n} from "../helpers/i18n";
+import {i18n} from '../helpers/i18n';
+import NavBarView from './navBarView';
 
 class FightersView extends View {
 
@@ -15,14 +16,14 @@ class FightersView extends View {
 
     constructor(fighters) {
         super();
-        this.handleClick = this.handleFighterClick.bind(this);
+        this.handleFighterClick = this.handleFighterClick.bind(this);
         this.handleSelectFighter = this.handleSelectFighter.bind(this);
         this.createFighters(fighters);
     }
 
     createFighters(fighters) {
         const fighterElements = fighters.map(fighter => {
-            const fighterView = new FighterView(fighter, this.handleClick, this.handleSelectFighter);
+            const fighterView = new FighterView(fighter, this.handleFighterClick, this.handleSelectFighter);
             return fighterView.element;
         });
 
@@ -30,6 +31,8 @@ class FightersView extends View {
         const fightersEls = this.createElement({tagName: 'div', className: selectors.fighter.fighters});
         fightersEls.append(...fighterElements);
         const startFightBtn = this.createStartFightButton();
+        const navBar = new NavBarView();
+        this.element.appendChild(navBar.element);
         this.element.appendChild(fightersEls);
         this.element.appendChild(startFightBtn);
     }
@@ -41,7 +44,7 @@ class FightersView extends View {
         });
         const startFightBtn = viewUtils.createElement({
             tagName: 'button',
-            classNames: ['btn-primary', 'btn', selectors.buttons.startFight],
+            classNames: ['btn-success', 'btn', selectors.buttons.startFight],
             attributes: {
                 type: 'button'
             }
@@ -78,11 +81,16 @@ class FightersView extends View {
     clearSelectedFighters() {
         let el = $('.' + selectors.fighter.selected);
         el.removeClass(selectors.fighter.selected);
-        el.removeClass('btn-danger');
+        el.removeClass(FightersView.selectFighterBtn.selected);
         el.removeClass('active');
-        el.addClass('btn-success');
+        el.addClass(FightersView.selectFighterBtn.deselected);
         this.selectedFighters = [];
     }
+
+    static selectFighterBtn = {
+        selected: 'btn-warning',
+        deselected: 'btn-info',
+    };
 
     async handleSelectFighter(e, fighter) {
         const el = $(e.target);
@@ -93,14 +101,14 @@ class FightersView extends View {
         if (isSelected) {
             this.selectedFighters = this.selectedFighters.filter(f => f._id !== fighter._id);
             el.removeClass(selectors.fighter.selected);
-            el.removeClass('btn-danger');
-            el.addClass('btn-success');
+            el.removeClass(FightersView.selectFighterBtn.selected);
+            el.addClass(FightersView.selectFighterBtn.deselected);
         } else {
             const fighterDetails = await this.getFighterDetails(fighter._id);
             this.selectedFighters.push(fighterDetails);
             el.addClass(selectors.fighter.selected);
-            el.removeClass('btn-success');
-            el.addClass('btn-danger');
+            el.removeClass(FightersView.selectFighterBtn.deselected);
+            el.addClass(FightersView.selectFighterBtn.selected);
         }
         this.toggleStartFightBtn();
     }

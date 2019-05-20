@@ -1,14 +1,17 @@
 import {messages} from "./messages";
+import {cookieUtils} from "./cookieUtils";
 
 class I18n {
 
     locale;
 
-    constructor(locale = 'en') {
-        this.locale = locale;
+    constructor() {
+        let savedLocale = cookieUtils.getCookie('locale');
+        this.locale = savedLocale ? savedLocale : 'en';
     }
 
     changeLocale(locale) {
+        cookieUtils.setCookie('locale', locale);
         this.locale = locale;
     }
 
