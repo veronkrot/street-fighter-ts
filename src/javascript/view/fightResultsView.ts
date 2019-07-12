@@ -1,32 +1,33 @@
 import View from "./view";
 import {selectors} from "../helpers/selectors";
-import {viewUtils} from "../helpers/viewUtils";
+import {ViewUtils} from "../helpers/viewUtils";
 import {i18n} from "../helpers/i18n";
+import Fighter from "../fighter";
 
 class FightResultsView extends View {
-    constructor(winners) {
+    constructor(winners: Array<Fighter>) {
         super();
         winners = [...winners];
         this.element = this.createView(winners);
     }
 
-    createView(winners) {
-        const body = this.createElement({
+    private createView(winners: Array<Fighter>): HTMLElement {
+        const body: HTMLElement = this.createElement({
             tagName: 'div',
             className: 'container'
         });
-        const textResultRow = viewUtils.createElement({
+        const textResultRow: HTMLElement = ViewUtils.createElement({
             tagName: 'span',
             classNames: ['row', 'justify-content-center', 'd-flex']
         });
-        let message = '';
+        let message: string = '';
         if (winners && winners.length > 1) {
             message = i18n.get('fight.result.winner.multiple') + winners.map(winner => winner.name).join(", ") + "!";
         } else if (winners.length === 1) {
             message = i18n.get('fight.result.winner.single') + winners[0].name + "!";
         }
         textResultRow.innerText = message;
-        const winnersRow = viewUtils.createElement({
+        const winnersRow: HTMLElement = ViewUtils.createElement({
             tagName: 'div',
             classNames: ['row', 'justify-content-center', 'd-flex']
         });
@@ -38,31 +39,31 @@ class FightResultsView extends View {
         return body;
     }
 
-    createWinnerView(winner, reverse = false) {
-        const col = viewUtils.createElement({
+    private createWinnerView(winner: Fighter , reverse: boolean = false): HTMLElement {
+        const col: HTMLElement = ViewUtils.createElement({
             tagName: 'div',
             classNames: ['col']
         });
-        const row1 = viewUtils.createElement({
+        const row1: HTMLElement = ViewUtils.createElement({
             tagName: 'div',
             classNames: ['row', 'justify-content-center', 'd-flex']
         });
-        const row2 = viewUtils.createElement({
+        const row2: HTMLElement = ViewUtils.createElement({
             tagName: 'div',
             classNames: ['row', 'justify-content-center', 'd-flex']
         });
-        let imgClass = undefined;
+        let imgClass: string = '';
         if (reverse) {
             imgClass = selectors.fight.secondFighter;
         }
-        const image = viewUtils.createElement({
+        const image: HTMLElement = ViewUtils.createElement({
             tagName: 'img',
             classNames: [selectors.fight.img, imgClass],
             attributes: {
                 src: winner.source
             }
         });
-        const name = this.createElement({
+        const name: HTMLElement = this.createElement({
             tagName: 'span',
             className: selectors.fighter.name
         });
@@ -71,7 +72,7 @@ class FightResultsView extends View {
         row2.appendChild(image);
         col.appendChild(row1);
         col.appendChild(row2);
-        return col;
+        return col as HTMLElement;
     }
 }
 

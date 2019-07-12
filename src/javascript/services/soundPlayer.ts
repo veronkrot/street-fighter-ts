@@ -1,19 +1,19 @@
 class SoundPlayer {
 
-    player;
+    player: HTMLAudioElement;
 
-    constructor(src, loop = false) {
+    constructor(src: string, loop: boolean = false) {
         this.player = new Audio(src);
         this.player.loop = loop;
     }
 
-    play() {
+    play(): void {
         this.player.play()
             .catch(e => console.log('Error during playing audio', e));
     }
 
 
-    stop() {
+    stop(): void {
         this.player.pause();
         this.player.currentTime = 0;
     }

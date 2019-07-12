@@ -1,21 +1,23 @@
 import FightersView from './view/fightersView';
 import {fighterService} from './services/fightersService';
 import {i18n} from "./helpers/i18n";
+import Fighter from "./fighter";
 
 class App {
+
     constructor() {
-        this.startApp();
+        App.startApp();
     }
 
-  static rootElement = document.getElementById('root');
-  static loadingElement = document.getElementById('loading-overlay');
+    static rootElement: HTMLDivElement = document.getElementById('root') as HTMLDivElement;
+    static loadingElement: HTMLDivElement = document.getElementById('loading-overlay') as HTMLDivElement;
 
-    async startApp() {
+    static async startApp(): Promise<void> {
         try {
             App.loadingElement.style.visibility = 'visible';
-            const fighters = await fighterService.getFighters();
-            const fightersView = new FightersView(fighters);
-            const fightersElement = fightersView.element;
+            const fighters: Array<Fighter> = await fighterService.getFighters();
+            const fightersView: FightersView = new FightersView(fighters);
+            const fightersElement: HTMLElement = fightersView.element;
 
             App.rootElement.appendChild(fightersElement);
         } catch (error) {
