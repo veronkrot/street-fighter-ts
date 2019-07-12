@@ -1,4 +1,4 @@
-export const messages = {
+export const messages: object = {
     en: {
         fighter: {
             select: 'Select',

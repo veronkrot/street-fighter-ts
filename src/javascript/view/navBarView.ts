@@ -1,5 +1,5 @@
 import View from "./view";
-import {viewUtils} from "../helpers/viewUtils";
+import {ViewUtils} from "../helpers/viewUtils";
 import {i18n} from "../helpers/i18n";
 
 class NavBarView extends View {
@@ -8,19 +8,19 @@ class NavBarView extends View {
         this.element = this.createNavBar();
     }
 
-    createNavBar() {
-        const nav = viewUtils.createElement({
+    private createNavBar(): HTMLElement {
+        const nav: HTMLElement = ViewUtils.createElement({
             tagName: 'nav',
             classNames: ['navbar', 'navbar-light', 'bg-light', 'fixed-top']
         });
-        const a = viewUtils.createElement({
+        const a: HTMLElement = ViewUtils.createElement({
             tagName: 'a',
             classNames: ['navbar-brand'],
             attributes: {
                 href: '#'
             }
         });
-        const img = viewUtils.createElement({
+        const img: HTMLElement = ViewUtils.createElement({
             tagName: 'img',
             attributes: {
                 src: './../../resources/logo.png',
@@ -31,12 +31,12 @@ class NavBarView extends View {
         a.appendChild(img);
         nav.appendChild(a);
 
-        const form = viewUtils.createElement({
+        const form: HTMLElement = ViewUtils.createElement({
             tagName: 'form',
             classNames: ['form-inline', 'my-2', 'my-lg-0'],
         });
 
-        const uaFlag = viewUtils.createElement({
+        const uaFlag: HTMLElement = ViewUtils.createElement({
             tagName: 'span',
             classNames: ['btn', 'btn-outline-dark', 'btn-margin', 'btn-sm'],
             attributes: {
@@ -45,7 +45,7 @@ class NavBarView extends View {
         });
         uaFlag.innerText = '🇺🇦';
 
-        const usFlag = viewUtils.createElement({
+        const usFlag: HTMLElement = ViewUtils.createElement({
             tagName: 'span',
             classNames: ['btn', 'btn-outline-dark', 'btn-sm', 'btn-margin'],
             attributes: {
@@ -54,10 +54,12 @@ class NavBarView extends View {
         });
         usFlag.innerText = '🇺🇸';
 
-        let localeClickHandler = e => {
-          const locale = e.target.getAttribute('locale');
-          i18n.changeLocale(locale);
-          window.location.reload();
+        let localeClickHandler: Function = (e: Event): void => {
+            const eventTarget: HTMLElement = (e.target as HTMLElement);
+            const locale: string = (eventTarget.getAttribute('locale') as string);
+            i18n.changeLocale(locale);
+            window.location.reload();
+
         };
         usFlag.addEventListener('click', e => localeClickHandler(e));
         uaFlag.addEventListener('click', e => localeClickHandler(e));

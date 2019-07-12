@@ -1,6 +1,16 @@
 const basePath = './../../resources/audio/';
 
-export const sounds = {
+interface IArray {
+    [position: string]: string;
+}
+
+interface SoundsInterface {
+    fight: string;
+    fighters: IArray;
+    victory: string;
+}
+
+export const sounds: SoundsInterface = {
     fight: basePath + 'mk.mp3',
     fighters: {
         1: basePath + 'ryu.wav',

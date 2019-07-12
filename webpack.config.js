@@ -1,14 +1,19 @@
 const path = require('path');
 
 module.exports = {
-  entry: './index.js',
+  entry: './index.ts',
   output: {
-    path: path.resolve(__dirname, 'dist'), 
+    path: path.resolve(__dirname, 'dist'),
     filename: 'bundle.js',
     publicPath: '/dist/'
   },
   module: {
     rules: [
+      {
+        test: /\.ts?$/,
+        exclude: /(node_modules|bower_components)/,
+        use: ['ts-loader']
+      },
       {
         test: /\.m?js$/,
         exclude: /(node_modules|bower_components)/,
@@ -32,5 +37,8 @@ module.exports = {
   devServer: {
     inline: true
   },
+  resolve: {
+    extensions: ['.js', '.ts', '.min.js']
+  },
   devtool: "source-map"
-}
+};

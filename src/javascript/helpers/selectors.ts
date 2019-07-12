@@ -1,4 +1,15 @@
-export const selectors = {
+interface ISelector {
+    [position: string]: string;
+}
+
+interface Selectors {
+    fight: ISelector;
+    stats: ISelector;
+    fighter: ISelector;
+    buttons: ISelector;
+}
+
+export const selectors: Selectors = {
     fight: {
         view: 'fight',
         exit: 'exit-battle',

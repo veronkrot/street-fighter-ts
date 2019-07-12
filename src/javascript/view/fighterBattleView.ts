@@ -1,29 +1,32 @@
 import View from "./view";
 import {selectors} from "../helpers/selectors";
-import {viewUtils} from "../helpers/viewUtils";
+import {ViewUtils} from "../helpers/viewUtils";
 import StatsView from "./statsView";
+import Fighter from "../fighter";
 
 class FighterBattleView extends View {
-    constructor(fighter, reverse) {
+    elements: Array<HTMLElement>;
+
+    constructor(fighter: Fighter, reverse?: boolean) {
         super();
         this.elements = this.createView(fighter, reverse);
     }
 
-    createView(fighter, reverse = false) {
-        let imgClass = undefined;
+    private createView(fighter: Fighter, reverse: boolean = false): Array<HTMLElement> {
+        let imgClass: string = '';
         if (reverse) {
             imgClass = selectors.fight.secondFighter;
         }
 
-        const col1 = this.createElement({
+        const col1: HTMLElement = this.createElement({
             tagName: 'div',
             className: 'col'
         });
-        const col2 = this.createElement({
+        const col2: HTMLElement = this.createElement({
             tagName: 'div',
             className: 'col'
         });
-        const image = viewUtils.createElement({
+        const image: HTMLElement = ViewUtils.createElement({
             tagName: 'img',
             classNames: [selectors.fight.img, imgClass],
             attributes: {
@@ -31,7 +34,7 @@ class FighterBattleView extends View {
             }
         });
 
-        const statsWrapper = new StatsView(fighter, reverse);
+        const statsWrapper: StatsView = new StatsView(fighter, reverse);
         col1.appendChild(statsWrapper.element);
         col2.appendChild(image);
         if (reverse) {

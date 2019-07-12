@@ -1,20 +1,22 @@
 import View from "./view";
-import {viewUtils} from "../helpers/viewUtils";
-import $ from 'jquery/dist/jquery.min';
+import {IBootstrapModal, ViewUtils} from "../helpers/viewUtils";
+import $ from 'jquery';
 import {selectors} from "../helpers/selectors";
 import FighterBattleView from "./fighterBattleView";
 import {i18n} from "../helpers/i18n";
 import FightResultsView from "./fightResultsView";
 import SoundPlayer from "../services/soundPlayer";
 import {sounds} from "../helpers/sounds";
+import Fighter, {FighterUtils} from "../fighter";
+import {BSButton} from "./BSButton";
 
 class FightView extends View {
 
-    fighter1;
-    fighter2;
-    player;
+    fighter1: Fighter;
+    fighter2: Fighter;
+    player: SoundPlayer;
 
-    constructor(fighter1, fighter2) {
+    constructor(fighter1: Fighter, fighter2: Fighter) {
         super();
         this.fighter1 = FightView._cloneFighter(fighter1);
         this.fighter2 = FightView._cloneFighter(fighter2);
@@ -23,31 +25,29 @@ class FightView extends View {
         this.handleExitBtnClick = this.handleExitBtnClick.bind(this);
         $(document).off('click', '.' + selectors.fight.strike);
         $(document).off('click', '.' + selectors.fight.exit);
-        $(document).on('click', '.' + selectors.fight.strike, (e) => this.handleStrikeBtnClick(e));
-        $(document).on('click', '.' + selectors.fight.exit, (e) => this.handleExitBtnClick(e));
+        $(document).on('click', '.' + selectors.fight.strike, (): void => this.handleStrikeBtnClick());
+        $(document).on('click', '.' + selectors.fight.exit, (): void => this.handleExitBtnClick());
         this.fighter1.currentHealth = fighter1.health;
         this.fighter2.currentHealth = fighter2.health;
         this.player = new SoundPlayer(sounds.fight, true);
         this.player.play();
     }
 
-    static _cloneFighter(fighter) {
+    private static _cloneFighter(fighter: Fighter): Fighter {
         let clonedFighter = {...fighter};
-        clonedFighter.getHitPower = fighter.getHitPower;
-        clonedFighter.getBlockPower = fighter.getBlockPower;
-        return clonedFighter;
+        return clonedFighter as Fighter;
     }
 
-    createView(fighter1, fighter2) {
-        const btn = this.createLogElement();
+    private createView(fighter1: Fighter, fighter2: Fighter): void {
+        const btn: HTMLElement = this.createLogElement();
 
-        const header = this.createHeader(fighter1, fighter2);
-        const body = this.createBody(fighter1, fighter2);
+        const header: HTMLElement = this.createHeader(fighter1, fighter2);
+        const body: HTMLElement = this.createBody(fighter1, fighter2);
 
-        this.element = viewUtils.createBSCard(header, body, btn);
+        this.element = ViewUtils.createBSCard(header, body, btn);
     }
 
-    createLogElement() {
+    private createLogElement(): HTMLElement {
         return this.createElement({
             tagName: 'span',
             className: 'log',
@@ -57,22 +57,22 @@ class FightView extends View {
         });
     }
 
-    createBody(fighter1, fighter2) {
-        const body = this.createElement({
+    private createBody(fighter1: Fighter, fighter2: Fighter): HTMLElement {
+        const body: HTMLElement = this.createElement({
             tagName: 'div',
             className: 'container'
         });
-        const row = this.createElement({
+        const row: HTMLElement = this.createElement({
             tagName: 'div',
             className: 'row'
         });
 
 
-        const col1 = new FighterBattleView(fighter1).elements;
-        const strikeBtn = this.createButton(i18n.get('fight.strike'), ['btn-warning', selectors.fight.strike]);
-        const col2 = this.createColumn(strikeBtn);
+        const col1: Array<HTMLElement> = new FighterBattleView(fighter1).elements;
+        const strikeBtn: HTMLElement = FightView.createButton(i18n.get('fight.strike'), ['btn-warning', selectors.fight.strike]);
+        const col2: HTMLElement = this.createColumn(strikeBtn);
         col2.classList.add('d-flex', 'justify-content-center');
-        const col3 = new FighterBattleView(fighter2, true).elements;
+        const col3: Array<HTMLElement> = new FighterBattleView(fighter2, true).elements;
 
         col1.forEach(col => row.appendChild(col));
         row.appendChild(col2);
@@ -82,34 +82,37 @@ class FightView extends View {
         return body;
     }
 
-    getStrikePower(fighter1, fighter2) {
-        let power = fighter1.getHitPower() - fighter2.getBlockPower();
+    private static getStrikePower(fighter1: Fighter, fighter2: Fighter): number {
+        const hitPower: number = FighterUtils.getHitPower(fighter1);
+        const blockPower: number = FighterUtils.getBlockPower(fighter2);
+        let power: number = hitPower - blockPower;
         if (power < 0) {
             power = 0;
         }
-        return power;
+        return power as number;
     }
 
-    fight(fighter1, fighter2) {
+    fight(fighter1: Fighter, fighter2: Fighter): void {
         // lets assume that strikes are performed simultaneously, then 'draw' is possible
-        const strikePow = this.getStrikePower(fighter1, fighter2);
-        let healthBeforeStrike = fighter2.currentHealth;
-        let healthAfterStrike = healthBeforeStrike - strikePow;
-        const today = new Date();
-        const time = today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
-        const logMessage = time + ' ' + fighter1.name + ' -> ' + fighter2.name + ': ' + healthBeforeStrike.toFixed(2) + ' -> ' + healthAfterStrike.toFixed(2);
+        const strikePow: number = FightView.getStrikePower(fighter1, fighter2);
+        let healthBeforeStrike: number = fighter2.currentHealth;
+        let healthAfterStrike: number = healthBeforeStrike - strikePow;
+        const today: Date = new Date();
+        const time: string = `${today.getHours()}:${today.getMinutes()}:${today.getSeconds()}`;
+        const logMessage: string = `${time} ${fighter1.name} -> ${fighter2.name}: ${healthBeforeStrike.toFixed(2)} -> ${healthAfterStrike.toFixed(2)}`;
         console.debug(logMessage);
         fighter2.currentHealth = healthAfterStrike;
-        this.updateHealthBar(fighter2);
-        const $log = $('.log');
-        const logMsgEl = this.createElement({
+        FightView.updateHealthBar(fighter2);
+
+        const $log: JQuery = $('.log');
+        const logMsgEl: HTMLElement = this.createElement({
             tagName: 'p'
         });
         logMsgEl.innerText = logMessage;
         $log[0].appendChild(logMsgEl);
     }
 
-    handleStrikeBtnClick(e) {
+    private handleStrikeBtnClick(): void {
         this.fight(this.fighter1, this.fighter2);
         this.fight(this.fighter2, this.fighter1);
         let winners = [];
@@ -121,19 +124,16 @@ class FightView extends View {
         }
         if (winners && winners.length > 0) {
             this.player.stop();
-            const winPlayer = new SoundPlayer(sounds.victory);
+            const winPlayer: SoundPlayer = new SoundPlayer(sounds.victory);
             winPlayer.play();
             FightView.hideFightView();
-            const modalDialog = viewUtils.createModalDialog(i18n.get('fight.result.title'), new FightResultsView(winners).element,
+            const modalDialog: IBootstrapModal = ViewUtils.createModalDialog(
+                i18n.get('fight.result.title'), new FightResultsView(winners).element,
                 [
-                    {
-                        label: i18n.get('fight.startAgain'),
-                        cssClass: "btn btn-sm btn-outline-info btn-block",
-                        action: (modalWrapper) => {
-                            $('#root').show();
-                            return modalWrapper.hide();
-                        }
-                    },
+                    new BSButton(i18n.get('fight.startAgain'), "btn btn-sm btn-outline-info btn-block", (modalWrapper: IBootstrapModal) => {
+                        $('#root').show();
+                        return modalWrapper.hide();
+                    })
                 ]).show();
             modalDialog.originalModal.on('hidden.bs.modal', () => {
                 winPlayer.stop();
@@ -144,9 +144,9 @@ class FightView extends View {
         }
     }
 
-    updateHealthBar(fighter) {
-        const $el = $('.' + this.getFighterHealthBarSelector(fighter));
-        let percentage = (fighter.currentHealth * 100) / fighter.health;
+    private static updateHealthBar(fighter: Fighter): void {
+        const $el: JQuery = $('.' + FightView.getFighterHealthBarSelector(fighter));
+        let percentage: number = (fighter.currentHealth * 100) / fighter.health;
         if (Number.isNaN(percentage) || percentage < 0) {
             percentage = 0;
         }
@@ -166,90 +166,90 @@ class FightView extends View {
         $el.text(Math.floor(fighter.currentHealth) + '/' + Math.floor(fighter.health));
     }
 
-    getFighterHealthBarSelector(fighter) {
+    private static getFighterHealthBarSelector(fighter: Fighter): string {
         return 'fighter-' + fighter._id;
     }
 
-    static hideFightView() {
+    private static hideFightView(): void {
         $('#' + selectors.fight.view).hide();
     }
 
-    handleExitBtnClick(e) {
+    private handleExitBtnClick(): void {
         FightView.hideFightView();
         $('#root').show();
         this.player.stop();
     }
 
-    createHeader(fighter1, fighter2) {
-        const header = this.createElement({
+    private createHeader(fighter1: Fighter, fighter2: Fighter): HTMLElement {
+        const header: HTMLElement = this.createElement({
             tagName: 'div',
             className: 'container'
         });
-        const row = this.createElement({
+        const row: HTMLElement = this.createElement({
             tagName: 'div',
             className: 'row'
         });
 
-        const col1 = this.createFighterHeader(fighter1);
-        const btn = this.createButton(
+        const col1: HTMLElement = this.createFighterHeader(fighter1);
+        const btn: HTMLElement = FightView.createButton(
             i18n.get('fight.exit'),
             ['btn-outline-danger', selectors.fight.exit]
         );
-        const col2 = this.createColumn(btn);
+        const col2: HTMLElement = this.createColumn(btn);
         col2.classList.add('d-flex', 'justify-content-center');
-        const col3 = this.createFighterHeader(fighter2, true);
+        const col3: HTMLElement = this.createFighterHeader(fighter2, true);
         row.appendChild(col1);
         row.appendChild(col2);
         row.appendChild(col3);
         header.appendChild(row);
-        return header;
+        return header as HTMLElement;
     }
 
-    createFighterHeader(fighter, reverse) {
-        const healthBar = this.createHealthBar(fighter, reverse);
-        let classNames = ['bold'];
+    private createFighterHeader(fighter: Fighter, reverse?: boolean): HTMLElement {
+        const healthBar: HTMLElement = FightView.createHealthBar(fighter, reverse);
+        let classNames: Array<string> = ['bold'];
         if (reverse) {
             classNames = [...classNames, 'd-flex', 'justify-content-end'];
         }
-        const name = viewUtils.createElement({
+        const name: HTMLElement = ViewUtils.createElement({
             tagName: 'span',
             classNames
         });
         name.innerText = fighter.name;
-        const header = this.createElement({
+        const header: HTMLElement = this.createElement({
             tagName: 'div'
         });
         header.appendChild(name);
         header.appendChild(healthBar);
-        return this.createColumn(header);
+        return this.createColumn(header) as HTMLElement;
     }
 
-    createColumn(colContent) {
-        const col = this.createElement({
+    private createColumn(colContent: HTMLElement): HTMLElement {
+        const col: HTMLElement = this.createElement({
             tagName: 'div',
             className: 'col'
         });
         if (colContent) {
             col.appendChild(colContent);
         }
-        return col;
+        return col as HTMLElement;
     }
 
 
-    createHealthBar(fighter, reverse = false) {
-        let className = '';
-        let barClass = '';
+    private static createHealthBar(fighter: Fighter, reverse: boolean = false): HTMLElement {
+        let className: string = '';
+        let barClass: string = '';
         if (reverse) {
             className = selectors.fighter.second;
             barClass = selectors.fighter.health;
         }
-        const healthBar = viewUtils.createElement({
+        const healthBar: HTMLElement = ViewUtils.createElement({
             tagName: 'div',
             classNames: ['progress', className]
         });
 
-        let healthBarClassName = this.getFighterHealthBarSelector(fighter);
-        const nestedBar = viewUtils.createElement({
+        let healthBarClassName: string = FightView.getFighterHealthBarSelector(fighter);
+        const nestedBar: HTMLElement = ViewUtils.createElement({
             tagName: 'div',
             classNames: ['progress-bar', 'progress-bar-striped', 'progress-bar-animated', 'bg-info', healthBarClassName, barClass],
             attributes: {
@@ -263,13 +263,13 @@ class FightView extends View {
         nestedBar.innerText = Math.floor(fighter.health) + '/' + Math.floor(fighter.health);
 
         healthBar.appendChild(nestedBar);
-        return healthBar;
+        return healthBar as HTMLElement;
     }
 
 
-    createButton(text, classNames) {
+    private static createButton(text: string, classNames: Array<string>): HTMLElement {
         classNames = ['btn', ...classNames];
-        const btn = viewUtils.createElement({
+        const btn: HTMLElement = ViewUtils.createElement({
             tagName: 'button',
             classNames,
             attributes: {
@@ -277,7 +277,7 @@ class FightView extends View {
             }
         });
         btn.innerText = text;
-        return btn;
+        return btn as HTMLElement;
     }
 
 }
